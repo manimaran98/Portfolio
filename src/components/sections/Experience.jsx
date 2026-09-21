@@ -35,7 +35,7 @@ export default function Experience() {
     <section
       id="experience"
       aria-labelledby="experience-title"
-      className="relative py-24 sm:py-32 lg:py-40"
+      className="relative py-16 sm:py-20 lg:py-24"
     >
       <div className="shell">
         <SectionHeading

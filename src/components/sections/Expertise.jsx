@@ -16,7 +16,7 @@ export default function Expertise() {
     <section
       id="expertise"
       aria-labelledby="expertise-title"
-      className="relative overflow-hidden py-24 sm:py-32 lg:py-40"
+      className="relative overflow-hidden py-16 sm:py-20 lg:py-24"
     >
       <SectionWash className="inset-x-0 top-0 h-[75%]" />
 

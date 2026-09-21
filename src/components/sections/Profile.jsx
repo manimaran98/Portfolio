@@ -16,7 +16,7 @@ export default function Profile() {
     <section
       id="profile"
       aria-labelledby="profile-title"
-      className="relative overflow-x-clip py-24 sm:py-32 lg:py-40"
+      className="relative overflow-x-clip py-16 sm:py-20 lg:py-24"
     >
       <SectionWash
         tone="warm"

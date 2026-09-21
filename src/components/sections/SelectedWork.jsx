@@ -21,7 +21,7 @@ export default function SelectedWork() {
     <section
       id="work"
       aria-labelledby="work-title"
-      className="relative overflow-hidden py-24 sm:py-32 lg:py-40"
+      className="relative overflow-hidden py-16 sm:py-20 lg:py-24"
     >
       <div className="shell relative">
         <SectionHeading
