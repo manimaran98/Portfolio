@@ -74,17 +74,38 @@ NEXT_PUBLIC_SITE_URL=https://staging.manimaranmahesan.com
    into the `sameAs` array in [`src/app/page.jsx`](src/app/page.jsx). Those
    reciprocal links are what let a search engine connect the page to you.
 
-### Deploying to a static host
+### Deploying
 
-The site has no server-side data, so it can be exported as flat files. Uncomment
-`output: 'export'` in `next.config.mjs`, then:
+The site runs on **Vercel's free Hobby plan** — no credit card, custom domain and
+HTTPS included, and Next's image optimizer stays on (the hero portrait is served
+at roughly 12 KB instead of its 285 KB source).
 
-```bash
-npm run build    # writes ./out
-```
+1. Go to [vercel.com/new](https://vercel.com/new), sign in **with GitHub**, and
+   import `manimaran98/Portfolio`.
+2. Change nothing. Vercel detects Next.js, and the defaults (`npm install`,
+   `next build`) are correct. Press **Deploy**.
+3. In the project, open **Settings → Domains** and add `manimaranmahesan.com`.
+   Add `www.manimaranmahesan.com` too, and set it to **redirect** to the apex —
+   two reachable hostnames split ranking signals.
+4. Vercel prints the exact DNS records to create at your registrar. Use the
+   values it shows rather than any copied from elsewhere; they change. They are
+   normally an `A` record on the apex and a `CNAME` on `www`.
+5. DNS takes minutes to a few hours. Vercel issues the certificate automatically
+   once it resolves.
 
-Upload `out/` to GitHub Pages, Netlify, S3 or any static host. On Vercel, leave the
-line commented and deploy as-is.
+Nothing needs configuring in the code: `SITE_URL` already defaults to
+`https://manimaranmahesan.com`.
+
+> **Hobby is licensed for non-commercial use.** A personal portfolio qualifies.
+> You would only need a paid plan if the site itself became a business.
+
+#### Alternative: a static host
+
+The site can also be exported to flat files for GitHub Pages, Netlify or S3.
+Uncomment `output: 'export'` in `next.config.mjs` and add
+`images: { unoptimized: true }`, then `npm run build` writes `./out`. The
+trade-off is that the image optimizer is disabled, so the portrait ships at
+full size.
 
 ## Project layout
 
