@@ -1,11 +1,16 @@
 'use client'
 
 import { ArrowUpRight, Mail, Phone } from 'lucide-react'
+import GithubMark from '@/components/ui/GithubMark'
+import LinkedInMark from '@/components/ui/LinkedInMark'
 import { Reveal, RevealGroup, RevealItem } from '@/components/ui/Reveal'
 import { FOOTER } from '@/data/content'
 
 /** External links point out of the site; the rest are mail or phone. */
+const BRAND_MARKS = { github: GithubMark, linkedin: LinkedInMark }
+
 function iconFor(link) {
+  if (link.icon && BRAND_MARKS[link.icon]) return BRAND_MARKS[link.icon]
   if (link.external) return ArrowUpRight
   if (link.href.startsWith('tel:')) return Phone
   return Mail
@@ -45,7 +50,7 @@ export default function Footer() {
 
         <RevealGroup
           as="ul"
-          className="mt-14 grid grid-cols-1 gap-x-10 sm:grid-cols-3"
+          className="mt-14 grid grid-cols-1 gap-x-10 md:grid-cols-2"
         >
           {FOOTER.links.map((link) => {
             const Icon = iconFor(link)
@@ -60,7 +65,7 @@ export default function Footer() {
                   className="group flex min-h-[44px] flex-col gap-3 border-t border-line py-6 transition-colors duration-300 hover:border-line-strong"
                 >
                   <span className="eyebrow text-steel-500">{link.label}</span>
-                  <span className="flex items-center gap-2 text-lg text-steel-200 transition-colors duration-300 group-hover:text-molten-300 sm:text-xl">
+                  <span className="flex items-center gap-2 text-base text-steel-200 transition-colors duration-300 group-hover:text-molten-300 sm:text-lg">
                     <span className="break-all">{link.value}</span>
                     <Icon
                       aria-hidden="true"

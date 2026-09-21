@@ -19,6 +19,8 @@ export const IDENTITY = {
     'mailto:manimaranmahesan@hotmail.com?subject=Let%27s%20build%20something',
   githubHandle: 'manimaran98',
   githubUrl: 'https://github.com/manimaran98',
+  linkedinHandle: 'manimaran-mahesan',
+  linkedinUrl: 'https://www.linkedin.com/in/manimaran-mahesan-b79b3a186/',
   resumeUrl: '/Manimaran_Mahesan_Resume.pdf',
   resumeFileName: 'Manimaran-Mahesan-Resume.pdf',
 }
@@ -366,6 +368,14 @@ export const FOOTER = {
       value: IDENTITY.githubHandle,
       href: IDENTITY.githubUrl,
       external: true,
+      icon: 'github',
+    },
+    {
+      label: 'LinkedIn',
+      value: IDENTITY.linkedinHandle,
+      href: IDENTITY.linkedinUrl,
+      external: true,
+      icon: 'linkedin',
     },
     {
       label: 'Call',

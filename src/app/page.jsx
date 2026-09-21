@@ -35,8 +35,8 @@ function jsonLd() {
     url: SITE_URL,
     image: `${SITE_URL}/opengraph-image.jpg`,
     // sameAs is how a search engine reconciles this page with the other
-    // profiles that carry the same name. Add LinkedIn here when it exists.
-    sameAs: [IDENTITY.githubUrl],
+    // profiles that carry the same name.
+    sameAs: [IDENTITY.linkedinUrl, IDENTITY.githubUrl],
     nationality: { '@type': 'Country', name: 'Malaysia' },
     homeLocation: {
       '@type': 'Place',

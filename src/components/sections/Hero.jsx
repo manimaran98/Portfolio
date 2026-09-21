@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'framer-motion'
 import { ArrowDownRight, Download, Mail, Phone } from 'lucide-react'
 import GithubMark from '@/components/ui/GithubMark'
+import LinkedInMark from '@/components/ui/LinkedInMark'
 import Spotlight from '@/components/ui/Spotlight'
 import ParticleField from '@/components/ui/ParticleField'
 import { useFinePointer } from '@/hooks/useFinePointer'
@@ -186,6 +187,16 @@ export default function Hero() {
               >
                 <GithubMark className="h-4 w-4" />
                 GitHub
+              </a>
+
+              <a
+                href={IDENTITY.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-line-strong px-5 py-3 text-sm text-steel-200 transition-colors duration-300 hover:border-molten-500/50 hover:text-molten-200"
+              >
+                <LinkedInMark className="h-4 w-4" />
+                LinkedIn
               </a>
 
               <a
