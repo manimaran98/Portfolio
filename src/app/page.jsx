@@ -4,7 +4,7 @@ import Expertise from '@/components/sections/Expertise'
 import Experience from '@/components/sections/Experience'
 import SelectedWork from '@/components/sections/SelectedWork'
 import Credentials from '@/components/sections/Credentials'
-import { SITE_URL } from './layout'
+import { SITE_URL } from '@/lib/site'
 import {
   CREDENTIALS,
   EXPERIENCE,

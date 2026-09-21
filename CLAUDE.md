@@ -30,6 +30,7 @@ Backend, database, migrations and auth: **none**. This is a static front-end.
 - Every animation must be disabled or reduced when `prefers-reduced-motion` is set — use the `useReducedMotion()` hook from Framer Motion.
 - Mouse-driven effects (tilt, parallax, spotlight) must be pointer-gated: skip them on touch/coarse pointers, never attach a `mousemove` listener that runs on mobile.
 - Tailwind v4: design tokens are declared in `@theme inline` inside `src/app/globals.css`, pointing at `:root` custom properties built with CSS `light-dark(<light>, <dark>)`. Add a token there rather than using an arbitrary hex value in a class.
+- The live domain is `manimaranmahesan.com` (apex is canonical; `www` should 301 to it). `SITE_URL` lives in `src/lib/site.js` — never import it from `layout.jsx`, or `robots.js` and `sitemap.js` end up pulling the whole root layout and `next/font` with it.
 - **Themes.** `data-theme` on `<html>` is the single source of truth; an inline script in `layout.jsx` sets it before first paint. Never hardcode `white`, `black` or a hex in a component — use the semantic tokens: `canvas`, `canvas-sunk`, `ink`, `surface`, `surface-strong`, `line`, `line-strong`, `on-accent`, plus the `steel-*` (muted text) and `molten-*` (accent) scales. All of them flip with the theme.
 - `text-on-accent` is for text sitting on a solid `molten` fill; it is not the same as the page canvas colour, and conflating the two breaks the light theme's CTA contrast.
 - Canvas drawing (ParticleField) cannot read these tokens: `getComputedStyle` returns the literal `light-dark(...)` text for an unregistered custom property. Branch on the theme in JS there and keep the values in step by hand.
@@ -45,7 +46,7 @@ Backend, database, migrations and auth: **none**. This is a static front-end.
 | Purpose | Path |
 |---|---|
 | All site content / copy | `src/data/content.js` |
-| Canonical origin (`SITE_URL`) | `src/app/layout.jsx` — override with `NEXT_PUBLIC_SITE_URL` |
+| Canonical origin (`SITE_URL`) | `src/lib/site.js` — defaults to `https://manimaranmahesan.com`, override with `NEXT_PUBLIC_SITE_URL` |
 | SEO: robots / sitemap / JSON-LD | `src/app/robots.js`, `src/app/sitemap.js`, `src/app/page.jsx` |
 | Social card + icons | `src/app/opengraph-image.jpg`, `twitter-image.jpg`, `icon.svg`, `apple-icon.png` |
 | Portrait cutout generator | `scripts/generate-cutout.py` |

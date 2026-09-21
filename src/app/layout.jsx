@@ -3,6 +3,7 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import ScrollProgress from '@/components/ui/ScrollProgress'
 import { IDENTITY } from '@/data/content'
+import { SITE_URL } from '@/lib/site'
 import './globals.css'
 
 const inter = Inter({
@@ -17,15 +18,6 @@ const oswald = Oswald({
   variable: '--font-oswald',
   display: 'swap',
 })
-
-/**
- * The canonical origin. Set NEXT_PUBLIC_SITE_URL in the deploy environment —
- * every canonical link, sitemap entry and social-card URL is built from it,
- * so a wrong value silently points search engines at the wrong host.
- */
-export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL || 'https://manimaranmahesan.com'
-).replace(/\/$/, '')
 
 // Leads with the name, because the search that matters most is the person's
 // own name; role and location follow for the queries that describe the job.

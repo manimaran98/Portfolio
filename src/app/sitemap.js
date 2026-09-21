@@ -1,4 +1,4 @@
-import { SITE_URL } from './layout'
+import { SITE_URL } from '@/lib/site'
 
 /**
  * One page, but a sitemap still earns its place: it gives the crawler a

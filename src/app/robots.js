@@ -1,4 +1,4 @@
-import { SITE_URL } from './layout'
+import { SITE_URL } from '@/lib/site'
 
 /**
  * Nothing here is private, so everything is crawlable. The sitemap pointer is

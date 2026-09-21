@@ -46,17 +46,33 @@ net start winnat
 
 The reservation can return after a reboot, which is why the scripts pin an explicit port.
 
-### Set your domain
+### Domain
 
-Every canonical link, sitemap entry and social-card URL is built from one value.
-Set it in the deploy environment (see [`.env.example`](.env.example)):
+The live domain is **manimaranmahesan.com**, and it is the built-in default —
+nothing needs configuring for a production deploy.
+
+Point the apex `manimaranmahesan.com` at the host and **301-redirect `www` to the
+apex**, so only one hostname is canonical. Two reachable hostnames split ranking
+signals between them.
+
+For a preview or staging deploy, override the origin so it does not claim the
+production canonical URL:
 
 ```
-NEXT_PUBLIC_SITE_URL=https://your-domain.com
+NEXT_PUBLIC_SITE_URL=https://staging.manimaranmahesan.com
 ```
 
-Leave it unset and the build falls back to a placeholder, which will point search
-engines at the wrong host.
+### After the first deploy
+
+1. Add the property in [Google Search Console](https://search.google.com/search-console)
+   and submit `https://manimaranmahesan.com/sitemap.xml`.
+2. Check the social card with the
+   [Facebook debugger](https://developers.facebook.com/tools/debug/) and
+   [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/) — both cache
+   aggressively, so inspect once to prime them before you share the link.
+3. Add the domain to your GitHub profile and LinkedIn, and put the LinkedIn URL
+   into the `sameAs` array in [`src/app/page.jsx`](src/app/page.jsx). Those
+   reciprocal links are what let a search engine connect the page to you.
 
 ### Deploying to a static host
 
