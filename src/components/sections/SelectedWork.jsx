@@ -1,3 +1,4 @@
+import SectionWash from '@/components/ui/SectionWash'
 import SectionHeading from '@/components/ui/SectionHeading'
 import ProjectCard from '@/components/ui/ProjectCard'
 import { Reveal, RevealGroup } from '@/components/ui/Reveal'
@@ -23,6 +24,7 @@ export default function SelectedWork() {
       aria-labelledby="work-title"
       className="relative overflow-hidden py-16 sm:py-20 lg:py-24"
     >
+      <SectionWash tone="warm" className="inset-x-0 top-0 h-[80%]" />
       <div className="shell relative">
         <SectionHeading
           number={WORK.number}

@@ -1,5 +1,6 @@
 'use client'
 
+import SectionWash from '@/components/ui/SectionWash'
 import { useRef } from 'react'
 import { motion, useReducedMotion, useScroll, useSpring } from 'framer-motion'
 import SectionHeading from '@/components/ui/SectionHeading'
@@ -35,8 +36,12 @@ export default function Experience() {
     <section
       id="experience"
       aria-labelledby="experience-title"
-      className="relative py-16 sm:py-20 lg:py-24"
+      className="relative overflow-x-clip py-16 sm:py-20 lg:py-24"
     >
+      <SectionWash
+        tone="cool"
+        className="top-0 left-0 hidden h-full w-[40rem] max-w-[48%] lg:block"
+      />
       <div className="shell">
         <SectionHeading
           number={EXPERIENCE.number}

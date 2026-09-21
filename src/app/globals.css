@@ -35,23 +35,23 @@
   /* Canvas + ink. Light is warm paper, not pure white, so the metallic
      language still has somewhere to sit. */
   --canvas: light-dark(#f5f4f1, #08080a);
-  --canvas-sunk: light-dark(#eceae6, #0c0c0f);
+  --canvas-sunk: light-dark(#e7e3dc, #0c0c0f);
   --ink: light-dark(#111114, #fafafa);
 
   /* Panels */
-  --surface: light-dark(rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.025));
+  --surface: light-dark(rgba(255, 253, 250, 0.88), rgba(255, 255, 255, 0.025));
   --surface-strong: light-dark(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.07));
 
   /* Hairlines */
-  --line: light-dark(rgba(17, 17, 20, 0.12), rgba(255, 255, 255, 0.08));
-  --line-strong: light-dark(rgba(17, 17, 20, 0.26), rgba(255, 255, 255, 0.18));
+  --line: light-dark(rgba(46, 32, 22, 0.15), rgba(255, 255, 255, 0.08));
+  --line-strong: light-dark(rgba(46, 32, 22, 0.32), rgba(255, 255, 255, 0.18));
 
   /* Muted text scale — 200 is the most prominent, 500 the quietest.
      That ordering holds in both themes; only the lightness inverts. */
-  --steel-200: light-dark(#33404d, #dfe7ef);
-  --steel-300: light-dark(#44515e, #b9c6d4);
-  --steel-400: light-dark(#5d6b7a, #8797a8);
-  --steel-500: light-dark(#7e8a96, #5d6b7a);
+  --steel-200: light-dark(#2b3542, #dfe7ef);
+  --steel-300: light-dark(#3b4552, #b9c6d4);
+  --steel-400: light-dark(#47525f, #8797a8);
+  --steel-500: light-dark(#556170, #5d6b7a);
 
   /* Molten bronze accent. Light mode runs deeper so accent text still
      clears contrast on a near-white canvas. */
@@ -65,35 +65,62 @@
   --on-accent: light-dark(#fffaf5, #08080a);
 
   /* Decorative layers */
-  --glow-warm: light-dark(rgba(226, 87, 10, 0.13), rgba(255, 138, 61, 0.16));
-  --glow-cool: light-dark(rgba(93, 107, 122, 0.09), rgba(185, 198, 212, 0.07));
+  --glow-warm: light-dark(rgba(156, 58, 8, 0.17), rgba(255, 138, 61, 0.16));
+  --glow-cool: light-dark(rgba(52, 66, 84, 0.13), rgba(185, 198, 212, 0.07));
+  --canvas-vignette: radial-gradient(
+    130% 92% at 50% 2%,
+    transparent 38%,
+    light-dark(rgba(58, 40, 26, 0.035), rgba(0, 0, 0, 0)) 72%,
+    light-dark(rgba(58, 40, 26, 0.1), rgba(0, 0, 0, 0)) 100%
+  );
+
   --scrollbar-thumb: light-dark(#cdc9c2, #26262e);
   --scrollbar-thumb-hover: light-dark(#b3aea6, #3a3a45);
 
   /* Specular sweep on tilt cards — light on dark, shadow on light. */
-  --glare: light-dark(rgba(17, 17, 20, 0.07), rgba(255, 255, 255, 0.09));
+  --glare: light-dark(rgba(17, 17, 20, 0.11), rgba(255, 255, 255, 0.09));
 
   /* Panel elevation. Each token holds ONE shadow because light-dark() takes
      exactly two arguments — a comma-separated shadow list would be parsed as
      extra arguments. They compose in .glass instead. */
-  --elev-contact: light-dark(0 1px 2px rgba(17, 17, 20, 0.05), 0 1px 3px rgba(0, 0, 0, 0.5));
-  --elev-cast: light-dark(0 14px 34px -18px rgba(17, 17, 20, 0.22), 0 22px 48px -28px rgba(0, 0, 0, 0.85));
+  --elev-contact: light-dark(0 1px 2px rgba(46, 32, 22, 0.08), 0 1px 3px rgba(0, 0, 0, 0.5));
+  --elev-cast: light-dark(0 18px 40px -20px rgba(46, 32, 22, 0.34), 0 22px 48px -28px rgba(0, 0, 0, 0.85));
   --elev-lip: light-dark(inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.05));
 
+  /* Key light falling on the figure. Warm, upper-left, matching where the
+     photograph's own light comes from. It blends in soft-light, which lifts
+     midtones and leaves both ends of the range alone — so it reads on the
+     navy suit and the skin, and does almost nothing to the paper around him
+     or to the near-black canvas. Light mode only: the dark canvas already has
+     its own light source in Spotlight and the bloom behind the figure, and a
+     second one on top of them read as a smear. Transparent makes the layer
+     inert rather than needing a branch in the markup. */
+  --portrait-key: light-dark(rgba(255, 226, 188, 0.8), transparent);
+
+  /* Hero portrait grade. On the dark canvas a heavy desaturation reads as
+     cinematic — the figure is lit against black and the grey only deepens it.
+     On paper the same grade has nothing to push against and just drains the
+     skin, so light mode keeps most of the colour and takes its drama from
+     contrast instead. Plain numbers, because filter is not a colour and
+     light-dark() only flips colours. */
+  --portrait-grayscale: 0.45;
+  --portrait-contrast: 1.06;
+  --portrait-saturate: 1;
+
   /* Hero portrait furniture */
-  --ring-cool: light-dark(rgba(72, 86, 102, 0.42), rgba(185, 198, 212, 0.5));
-  --ring-warm: light-dark(rgba(194, 74, 8, 0.4), rgba(255, 171, 92, 0.42));
-  --portrait-glow-core: light-dark(rgba(226, 87, 10, 0.16), rgba(255, 138, 61, 0.24));
-  --portrait-glow-halo: light-dark(rgba(226, 87, 10, 0.05), rgba(255, 138, 61, 0.07));
+  --ring-cool: light-dark(rgba(52, 66, 84, 0.55), rgba(185, 198, 212, 0.5));
+  --ring-warm: light-dark(rgba(168, 62, 8, 0.58), rgba(255, 171, 92, 0.42));
+  --portrait-glow-core: light-dark(rgba(146, 54, 8, 0.28), rgba(255, 138, 61, 0.24));
+  --portrait-glow-halo: light-dark(rgba(146, 54, 8, 0.1), rgba(255, 138, 61, 0.07));
 
   /* Feathers the cutout's silhouette into the page. The matte from background
      removal has a hard alpha edge, and on the light canvas the de-fringing
      leaves a faintly dark rim; a halo in the canvas colour dissolves both.
      drop-shadow is the right tool because it follows the alpha channel —
      box-shadow would only trace the element's rectangle. */
-  --portrait-halo-tight: light-dark(rgba(245, 244, 241, 0.95), rgba(8, 8, 10, 0.95));
-  --portrait-halo-mid: light-dark(rgba(245, 244, 241, 0.7), rgba(8, 8, 10, 0.75));
-  --portrait-halo-wide: light-dark(rgba(245, 244, 241, 0.4), rgba(8, 8, 10, 0.5));
+  --portrait-halo-tight: light-dark(rgba(245, 244, 241, 0.8), rgba(8, 8, 10, 0.95));
+  --portrait-halo-mid: light-dark(rgba(245, 244, 241, 0.32), rgba(8, 8, 10, 0.75));
+  --portrait-halo-wide: light-dark(rgba(245, 244, 241, 0.14), rgba(8, 8, 10, 0.5));
 
 
   /* Brushed metal for impact type: silver on dark, graphite on light. */
@@ -113,6 +140,28 @@
     light-dark(#e2570a, #e86a1f) 72%,
     light-dark(#a83e08, #ffcb93) 100%
   );
+}
+
+/* The portrait grade, per theme. These MUST stay unlayered: the base values
+   live in the plain :root above, and an unlayered declaration wins over any
+   @layer regardless of selector — written inside @layer components these
+   never applied at all. Same resolution order as the colour tokens. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --portrait-grayscale: 0.1;
+    --portrait-contrast: 1.14;
+    --portrait-saturate: 1.12;
+  }
+}
+:root[data-theme="light"] {
+  --portrait-grayscale: 0.1;
+  --portrait-contrast: 1.14;
+  --portrait-saturate: 1.12;
+}
+:root[data-theme="dark"] {
+  --portrait-grayscale: 0.45;
+  --portrait-contrast: 1.06;
+  --portrait-saturate: 1;
 }
 
 @theme inline {
@@ -156,8 +205,14 @@
     -webkit-text-size-adjust: 100%;
   }
 
+  html {
+    background-color: var(--canvas);
+  }
+
   body {
     background-color: var(--canvas);
+    background-image: var(--canvas-vignette);
+    background-attachment: fixed;
     color: var(--ink);
     font-family: var(--font-sans);
     font-feature-settings: "cv02", "cv03", "cv04", "ss01";
@@ -270,6 +325,65 @@
   .hairline {
     height: 1px;
     background-image: linear-gradient(to right, var(--line-strong), transparent);
+  }
+
+  /* One portrait per theme, stacked, CSS picks. Same resolution order as the
+     colour tokens above: dark by default, light when the OS asks and the user
+     has not pinned dark, explicit data-theme always wins. The media query is
+     what keeps this right with JavaScript off, when no data-theme is set. */
+  .portrait-key {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      44% 36% at 38% 24%,
+      var(--portrait-key),
+      transparent 72%
+    );
+    mix-blend-mode: soft-light;
+  }
+
+  .portrait-figure {
+    filter: grayscale(var(--portrait-grayscale))
+      contrast(var(--portrait-contrast))
+      saturate(var(--portrait-saturate));
+    transition: filter 700ms var(--ease-cinematic);
+  }
+  .portrait-figure:hover {
+    filter: grayscale(0) contrast(1) saturate(1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .portrait-figure {
+      transition: none;
+      --portrait-grayscale: 0.25;
+    }
+  }
+
+  .portrait-dark {
+    display: block;
+  }
+  .portrait-light {
+    display: none;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .portrait-dark {
+      display: none;
+    }
+    :root:not([data-theme="dark"]) .portrait-light {
+      display: block;
+    }
+  }
+  :root[data-theme="light"] .portrait-dark {
+    display: none;
+  }
+  :root[data-theme="light"] .portrait-light {
+    display: block;
+  }
+  :root[data-theme="dark"] .portrait-dark {
+    display: block;
+  }
+  :root[data-theme="dark"] .portrait-light {
+    display: none;
   }
 
   .shell {

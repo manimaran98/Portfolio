@@ -18,6 +18,16 @@ const EASE = [0.16, 1, 0.3, 1]
 const PORTRAIT_MASK =
   'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 74%, rgba(0,0,0,0.6) 89%, rgba(0,0,0,0) 100%)'
 
+/* One cutout per theme — the edge feathering is baked per background, so the
+   dark-canvas version reads wrong on the light one. Swapped by the
+   .portrait-dark / .portrait-light rules in globals.css rather than by state:
+   a hook would render the wrong portrait in the prerendered HTML and flip it
+   after hydration, and would show nothing at all with JavaScript off. */
+const PORTRAITS = [
+  { src: '/profile-dark-mode.png', visibility: 'portrait-dark' },
+  { src: '/profile-white-mode.png', visibility: 'portrait-light' },
+]
+
 /* Punches a 1px ring out of the conic sweep. */
 const RING_MASK =
   'radial-gradient(closest-side, transparent calc(100% - 1px), #000 calc(100% - 1px))'
@@ -101,10 +111,6 @@ export default function Hero() {
     },
   })
 
-  const portraitFilter = reduced
-    ? 'grayscale-[0.25] contrast-[1.04]'
-    : 'grayscale-[0.45] contrast-[1.06] transition-[filter] duration-700 ease-out hover:grayscale-0 hover:contrast-100'
-
   return (
     <section
       id="top"
@@ -121,7 +127,7 @@ export default function Hero() {
       <div className="shell relative z-10 w-full">
         <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-12 lg:gap-10">
           {/* Text */}
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-6">
             <motion.div
               className="flex items-center gap-3 sm:gap-4"
               initial={{ opacity: 0 }}
@@ -238,7 +244,7 @@ export default function Hero() {
 
           {/* Portrait */}
           <motion.div
-            className="lg:col-span-5"
+            className="lg:col-span-6"
             initial={{ opacity: 0, y: reduced ? 0 : 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
@@ -248,7 +254,7 @@ export default function Hero() {
             }}
           >
             <div
-              className="relative mx-auto w-full max-w-[16rem] sm:max-w-[19rem] lg:max-w-[22rem]"
+              className="relative mx-auto w-full max-w-[20rem] sm:max-w-[24rem] lg:max-w-[30rem]"
               style={{ perspective: '1200px' }}
             >
               <motion.div
@@ -283,7 +289,7 @@ export default function Hero() {
               />
 
               <motion.div
-                className="relative aspect-[1448/1086] w-full"
+                className="relative aspect-[1177/1336] w-full"
                 style={{
                   x: portraitX,
                   y: portraitY,
@@ -295,19 +301,30 @@ export default function Hero() {
                 }}
               >
                 <div
-                  className="h-full w-full"
+                  className="relative h-full w-full"
                   style={{ filter: PORTRAIT_HALO }}
                 >
-                  <Image
-                    src="/profile.png"
-                    alt={HERO.portraitAlt}
-                    width={1448}
-                    height={1086}
-                    priority
-                    sizes="(min-width: 1024px) 22rem, 70vw"
-                    className={`h-full w-full object-contain object-bottom ${portraitFilter}`}
-                  />
+                  {PORTRAITS.map(({ src, visibility }) => (
+                    <Image
+                      key={src}
+                      src={src}
+                      alt={HERO.portraitAlt}
+                      width={1177}
+                      height={1336}
+                      priority
+                      sizes="(min-width: 1024px) 30rem, 80vw"
+                      className={`portrait-figure absolute inset-0 h-full w-full object-contain object-bottom ${visibility}`}
+                    />
+                  ))}
                 </div>
+
+                {/* Outside the halo wrapper on purpose. PORTRAIT_HALO is a
+                    drop-shadow, which traces the alpha of everything it
+                    filters — a full-rect gradient inside it would give the
+                    cutout a rectangular shadow. Out here it still blends
+                    against the portrait, because the transformed parent is
+                    the stacking context they share. */}
+                <div aria-hidden="true" className="portrait-key" />
               </motion.div>
             </div>
           </motion.div>

@@ -1,5 +1,6 @@
 'use client'
 
+import SectionWash from '@/components/ui/SectionWash'
 import { Award, BadgeCheck, Download, GraduationCap, Mail } from 'lucide-react'
 import { Reveal, RevealGroup, RevealItem } from '@/components/ui/Reveal'
 import SectionHeading from '@/components/ui/SectionHeading'
@@ -17,8 +18,12 @@ export default function Credentials() {
     <section
       id="credentials"
       aria-labelledby="credentials-title"
-      className="relative py-16 sm:py-20 lg:py-24"
+      className="relative overflow-x-clip py-16 sm:py-20 lg:py-24"
     >
+      <SectionWash
+        tone="cool"
+        className="right-0 bottom-0 hidden h-[85%] w-[38rem] max-w-[46%] lg:block"
+      />
       <div className="shell">
         <SectionHeading
           number={CREDENTIALS.number}

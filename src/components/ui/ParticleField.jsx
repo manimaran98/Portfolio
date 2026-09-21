@@ -36,8 +36,13 @@ export default function ParticleField({ density = 0.00006 }) {
     // here instead. Keep them in step with --molten-400 / --steel-200/300
     // in globals.css.
     const light = theme === 'light'
-    const warmRgb = light ? '194, 74, 8' : '255, 171, 92'
-    const coolRgb = light ? '90, 104, 120' : '223, 231, 239'
+    const warmRgb = light ? '156, 58, 8' : '255, 171, 92'
+    const coolRgb = light ? '52, 66, 84' : '223, 231, 239'
+    // Dark motes on paper have none of the additive lift a bright mote gets on
+    // the dark canvas, so the same alpha reads as nothing. Scale it up rather
+    // than change the particle count: the dust should be the same density in
+    // both themes, just actually visible in one of them.
+    const alphaScale = light ? 1.5 : 1
 
     const build = () => {
       const rect = canvas.getBoundingClientRect()
@@ -76,8 +81,8 @@ export default function ParticleField({ density = 0.00006 }) {
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
         ctx.fillStyle = p.warm
-          ? `rgba(${warmRgb}, ${p.a})`
-          : `rgba(${coolRgb}, ${p.a * 0.75})`
+          ? `rgba(${warmRgb}, ${p.a * alphaScale})`
+          : `rgba(${coolRgb}, ${p.a * 0.75 * alphaScale})`
         ctx.fill()
       }
       raf = requestAnimationFrame(draw)
