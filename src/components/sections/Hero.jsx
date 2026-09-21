@@ -299,7 +299,7 @@ export default function Hero() {
                   style={{ filter: PORTRAIT_HALO }}
                 >
                   <Image
-                    src="/Profile-cutout.png"
+                    src="/profile.png"
                     alt={HERO.portraitAlt}
                     width={470}
                     height={728}
