@@ -46,6 +46,18 @@ net start winnat
 
 The reservation can return after a reboot, which is why the scripts pin an explicit port.
 
+### Set your domain
+
+Every canonical link, sitemap entry and social-card URL is built from one value.
+Set it in the deploy environment (see [`.env.example`](.env.example)):
+
+```
+NEXT_PUBLIC_SITE_URL=https://your-domain.com
+```
+
+Leave it unset and the build falls back to a placeholder, which will point search
+engines at the wrong host.
+
 ### Deploying to a static host
 
 The site has no server-side data, so it can be exported as flat files. Uncomment
@@ -110,10 +122,34 @@ a background colour, so the white would show as a hard box on the dark canvas. T
 is that photo with the background knocked out and the matte eroded a pixel to kill the
 white fringe.
 
-To swap the photo, the reliable route is to supply a **transparent PNG cutout** directly
-and update the `src`, `width`, `height` and the `aspect-[238/365]` ratio in
-[`Hero.jsx`](src/components/sections/Hero.jsx). A higher-resolution source is worth it —
-400×400 is small for a hero portrait and is being upscaled slightly on wide screens.
+The cutout is produced by [`scripts/generate-cutout.py`](scripts/generate-cutout.py),
+which is re-runnable and never modifies the source JPEG:
+
+```bash
+python scripts/generate-cutout.py
+```
+
+To swap the photo, replace `public/Profile.jpg` and re-run it — then update the
+`width`, `height` and `aspect-[…]` in [`Hero.jsx`](src/components/sections/Hero.jsx)
+to the dimensions it prints. A higher-resolution source is worth supplying: the
+original is only 400×400, which is small for a hero portrait.
+
+## SEO and sharing
+
+Generated from the same content source as the page, so they cannot drift:
+
+| Output | Source |
+|---|---|
+| `/robots.txt` | [`src/app/robots.js`](src/app/robots.js) |
+| `/sitemap.xml` | [`src/app/sitemap.js`](src/app/sitemap.js) |
+| `ProfilePage` + `Person` + `WebSite` JSON-LD | [`src/app/page.jsx`](src/app/page.jsx) |
+| 1200x630 social card | `src/app/opengraph-image.jpg` |
+| Monogram icons | `src/app/icon.svg`, `src/app/apple-icon.png` |
+
+The `Person` block carries a `sameAs` array — **add your LinkedIn URL there** when
+you have one. That array is how a search engine reconciles this page with your
+other profiles under the same name, which is the single highest-leverage change
+left for showing up when someone searches your name.
 
 ## Design system
 
