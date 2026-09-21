@@ -115,7 +115,12 @@ export default function Page() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd()) }}
+        // `<` is escaped because JSON.stringify does not do it and this is
+        // injected raw: a `</script>` in any content string would otherwise
+        // close the block and turn the rest into live markup.
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd()).replace(/</g, '\\u003c'),
+        }}
       />
       <Hero />
       <Profile />

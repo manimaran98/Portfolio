@@ -1,17 +1,23 @@
 """
-Regenerate public/Profile-cutout.png from public/Profile.jpg.
+Regenerate public/Profile-cutout.png from docs/Profile.jpg.
 
 One deterministic pass: knock out the white studio background, erode the matte
 to kill the white fringe, crop to the subject, then upscale 2x so retina gets a
 real variant instead of a browser stretch. Re-runnable — the source JPEG is
 never modified.
+
+NOT the live hero portrait. The hero renders public/profile.png, an 800x1321
+cutout made from a different, higher-resolution photo that is not in this repo
+and never passed through this script. Running this produces a 470x728 cutout
+from the 400x400 docs/Profile.jpg — the previous portrait, superseded in
+06adb3f. Keep the two straight before wiring the output into Hero.jsx.
 """
 from collections import deque
 import numpy as np
 from PIL import Image, ImageFilter
 import os
 
-SRC, DST = 'public/Profile.jpg', 'public/Profile-cutout.png'
+SRC, DST = 'docs/Profile.jpg', 'public/Profile-cutout.png'
 
 img = Image.open(SRC).convert('RGB')
 w, h = img.size
@@ -103,4 +109,5 @@ final.save(DST, optimize=True)
 
 print(f'cropped {cw}x{ch} -> output {final.size[0]}x{final.size[1]}'
       f'  aspect {cw/ch:.4f}  {os.path.getsize(DST)//1024} KB')
-print(f'Hero.jsx should use: aspect-[{cw}/{ch}]  width={{{final.size[0]}}}  height={{{final.size[1]}}}')
+print(f'If you wire THIS output into Hero.jsx (it is not what ships today), use:'
+      f'  aspect-[{cw}/{ch}]  width={{{final.size[0]}}}  height={{{final.size[1]}}}')

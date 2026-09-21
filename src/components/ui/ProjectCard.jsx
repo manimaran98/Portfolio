@@ -84,7 +84,7 @@ export default function ProjectCard({ project, privateNote }) {
               type="button"
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
-              aria-controls={panelId}
+              {...(open ? { 'aria-controls': panelId } : {})}
               className="mt-5 -mx-2 min-h-[44px] px-2 py-3 inline-flex items-center gap-2 text-xs font-medium tracking-[0.18em] text-steel-300 uppercase transition-colors hover:text-molten-400"
             >
               <Plus

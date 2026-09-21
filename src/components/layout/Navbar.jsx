@@ -106,6 +106,29 @@ export default function Navbar() {
     if (open) panelRef.current?.focus()
   }, [open])
 
+  // Take the content behind the panel out of the tab order and out of the
+  // accessibility tree. Without this you tab off the last menu link and land
+  // on the page underneath — covered, invisible, still focusable. `inert`
+  // does both jobs in one attribute.
+  //
+  // The header is deliberately NOT inerted. It sits at z-50, above the z-40
+  // panel, and carries the close button and theme toggle, so it stays visible
+  // and usable while the panel is open. Inerting it would make the X
+  // unclickable. For the same reason the panel is a `dialog` but not an
+  // `aria-modal` one — the header is legitimately outside it and must stay
+  // reachable.
+  useEffect(() => {
+    if (!open) return
+
+    const behind = [
+      document.getElementById('main'),
+      document.querySelector('footer'),
+    ].filter(Boolean)
+
+    behind.forEach((el) => el.setAttribute('inert', ''))
+    return () => behind.forEach((el) => el.removeAttribute('inert'))
+  }, [open])
+
   const panelVariants = {
     hidden: { opacity: 0, y: reduced ? 0 : -24 },
     visible: {
@@ -212,7 +235,7 @@ export default function Navbar() {
               type="button"
               onClick={() => setOpen((prev) => !prev)}
               aria-expanded={open}
-              aria-controls={PANEL_ID}
+              {...(open ? { 'aria-controls': PANEL_ID } : {})}
               aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
               className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-steel-200 transition-colors duration-300 hover:border-line-strong hover:text-ink lg:hidden"
             >

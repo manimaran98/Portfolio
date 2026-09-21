@@ -40,7 +40,9 @@ Backend, database, migrations and auth: **none**. This is a static front-end.
 - `RevealHeading` observes the **wrapper**, not the heading. A translated element sits outside its own overflow clip, and IntersectionObserver measures the clipped rect — so `whileInView` on the heading itself reports zero visible area and never fires. Anything that animates out of a mask has to be triggered from an unclipped ancestor.
 - `generate-cutout.py` **decontaminates the matte**: a partially transparent pixel that kept the white backdrop's colour paints as a bright rim, because PNG stores straight alpha and the browser composites `rgb*a + bg*(1-a)`. Darkening those pixels does not work — white at 80% is still light. They are replaced with the nearest fully opaque subject colour. If a halo ever reappears, measure the RGB of the `alpha < 250` band, not the opaque pixels; the opaque ones always look fine.
 - The portrait's cut edge is feathered by a `drop-shadow` halo in the **page colour** (`--portrait-halo-tight/mid/wide`), applied to a wrapper `div` — not to the `<img>`, whose `filter` already carries grayscale/contrast and would be overwritten. `drop-shadow` follows the alpha channel; `box-shadow` would only trace the rectangle. The halo renders *behind* the image, so it can soften a hard edge but can never hide a bright rim baked into the pixels — that has to be fixed in `scripts/generate-cutout.py`.
-- The hero renders `Profile-cutout.png`, a background-removed derivative of `Profile.jpg` produced by `scripts/generate-cutout.py` (re-runnable; never edit the PNG by hand). Replacing the photo means supplying a new transparent cutout and updating the `src`, `width`, `height` and `aspect-[235/364]` in `Hero.jsx` — dropping in a JPEG with a background will render as a white box on the dark canvas.
+- The hero renders `public/profile.png`, an 800x1321 transparent cutout. **Its source is not in this repo** and `scripts/generate-cutout.py` does not produce it — that script is the older pipeline, reading `docs/Profile.jpg` (400x400) and writing a 470x728 `public/Profile-cutout.png`, the portrait that shipped before `06adb3f`. Replacing the photo means supplying a new transparent cutout and updating `src`, `width`, `height` and the `aspect-[...]` wrapper in `Hero.jsx` **to the file's real pixel dimensions**. All three must agree: when `width`/`height`/`aspect` said 470x728 while the file was 800x1321, `object-contain` silently letterboxed the portrait ~6% narrow inside its own box and the decorative ring drifted off the figure. Dropping in a JPEG with a background will render as a white box on the dark canvas.
+- **Security headers live in `next.config.mjs` `headers()`** — CSP, `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`, HSTS. The CSP must keep `'unsafe-inline'` on `script-src` and `style-src`: the no-flash theme script, Next's hydration bootstrap and Framer Motion's inline styles all need it, and a prerendered page has no per-request nonce. `headers()` is **ignored under `output: 'export'`** — a static host has to set them itself.
+- The JSON-LD block in `page.jsx` is injected with `dangerouslySetInnerHTML`, and `JSON.stringify` does not escape `<`. The `.replace(/</g, '\\u003c')` on it is load-bearing: without it a `</script>` in any `content.js` string breaks out of the block and becomes live markup. It still round-trips as valid JSON, so crawlers read the same data.
 - No CSS modules and no per-component `.css` files — utility classes plus the few component classes defined in `src/app/globals.css`.
 
 ---
@@ -54,12 +56,13 @@ Backend, database, migrations and auth: **none**. This is a static front-end.
 | Social card + icons | `src/app/opengraph-image.jpg`, `twitter-image.jpg`, `icon.svg`, `apple-icon.png` |
 | Portrait cutout generator | `scripts/generate-cutout.py` |
 | Design tokens + global CSS | `src/app/globals.css` |
+| Security headers + CSP | `next.config.mjs` |
 | Nav + footer | `src/components/layout/` |
 | Page sections (01–05, hero) | `src/components/sections/` |
 | Reusable primitives | `src/components/ui/` |
 | Hooks (scroll spy, pointer) | `src/hooks/` |
 | Static assets (photo, résumé) | `public/` |
-| Hero portrait actually rendered | `public/Profile-cutout.png` (derived from `Profile.jpg`) |
+| Hero portrait actually rendered | `public/profile.png` (800x1321; source not in repo) |
 | Source assets (resume PDF, photo) | `docs/` |
 
 ---
@@ -73,6 +76,7 @@ Backend, database, migrations and auth: **none**. This is a static front-end.
 | V3 | UX pass: 44px tap targets, `.measure` reading width, panel elevation, masked headline reveal, no-JS fallback |
 | V5 | Theme-matched portrait halo: the cutout edge dissolves into the canvas, dark on dark and light on light |
 | V4 | SEO + sharing: robots, sitemap, ProfilePage/Person/WebSite JSON-LD, 1200×630 social card, monogram icons, designed 404, named section landmarks |
+| V6 | Security + correctness pass: CSP and hardening headers, escaped JSON-LD injection, portrait dimensions matched to the real file, `inert` behind the mobile nav, reduced-motion scroll bar |
 
 ---
 

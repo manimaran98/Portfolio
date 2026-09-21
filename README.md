@@ -78,7 +78,7 @@ NEXT_PUBLIC_SITE_URL=https://staging.manimaranmahesan.com
 
 The site runs on **Vercel's free Hobby plan** — no credit card, custom domain and
 HTTPS included, and Next's image optimizer stays on (the hero portrait is served
-at roughly 12 KB instead of its 285 KB source).
+at a fraction of its 1.1 MB source).
 
 1. Go to [vercel.com/new](https://vercel.com/new), sign in **with GitHub**, and
    import `manimaran98/Portfolio`.
@@ -102,17 +102,37 @@ Nothing needs configuring in the code: `SITE_URL` already defaults to
 #### Alternative: a static host
 
 The site can also be exported to flat files for GitHub Pages, Netlify or S3.
-Uncomment `output: 'export'` in `next.config.mjs` and add
-`images: { unoptimized: true }`, then `npm run build` writes `./out`. The
-trade-off is that the image optimizer is disabled, so the portrait ships at
-full size.
+Uncomment **both** `output: 'export'` and `images: { unoptimized: true }` in
+`next.config.mjs` — `export` does not support `next/image`'s default loader, so
+the build fails on the hero portrait without the second line. Then `npm run build`
+writes `./out`.
+
+Two trade-offs: the image optimizer is off, so the portrait ships at full size,
+and `headers()` is ignored under `export` — the security headers below have to be
+configured at the host instead.
+
+### Security headers
+
+[`next.config.mjs`](next.config.mjs) sets a CSP plus `X-Content-Type-Options`,
+`Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy` and HSTS on every
+response. The CSP allows `'unsafe-inline'` for scripts and styles by necessity,
+not oversight: the no-flash theme script in `layout.jsx`, Next's hydration
+bootstrap and Framer Motion's per-element inline styles are all inline, and a
+prerendered page has no per-request nonce to hand them. `frame-ancestors 'none'`
+is the part that actually earns its keep — it stops the site being framed into
+a phishing page.
+
+Verify them against a deploy with:
+
+```bash
+curl -sI https://manimaranmahesan.com | grep -i "content-security\|x-frame\|x-content\|referrer\|strict-transport"
+```
 
 ## Project layout
 
 ```
 public/
-  Profile.jpg                  original photo (white studio background)
-  Profile-cutout.png           background removed — this is what the hero renders
+  profile.png                  hero portrait, 800x1321 transparent cutout
   Manimaran_Mahesan_Resume.pdf downloadable résumé
 src/
   app/
@@ -153,23 +173,30 @@ updating `IDENTITY.resumeUrl`.
 
 ### About the portrait
 
-The hero renders `public/Profile-cutout.png`, **not** `Profile.jpg`. The original is a
-400×400 photo on a white studio background; a CSS mask can fade an edge but cannot remove
-a background colour, so the white would show as a hard box on the dark canvas. The cutout
-is that photo with the background knocked out and the matte eroded a pixel to kill the
-white fringe.
+The hero renders `public/profile.png` — an 800×1321 cutout with a real alpha
+channel. It has to be a cutout: a CSS mask can fade an edge but cannot remove a
+background colour, so a JPEG on a white studio backdrop would show as a hard box
+on the dark canvas.
 
-The cutout is produced by [`scripts/generate-cutout.py`](scripts/generate-cutout.py),
-which is re-runnable and never modifies the source JPEG:
+**The source for that file is not in this repo.** It was produced outside the
+project and committed in `06adb3f`; nothing here regenerates it.
+
+[`scripts/generate-cutout.py`](scripts/generate-cutout.py) is the *older* pipeline.
+It reads `docs/Profile.jpg` (400×400, white studio background), knocks out the
+background, erodes the matte a pixel to kill the white fringe, and writes a
+470×728 `public/Profile-cutout.png` — the portrait that shipped before `06adb3f`.
+It is re-runnable and never modifies the source JPEG, but its output is **not**
+what the hero renders today:
 
 ```bash
 python scripts/generate-cutout.py
 ```
 
-To swap the photo, replace `public/Profile.jpg` and re-run it — then update the
-`width`, `height` and `aspect-[…]` in [`Hero.jsx`](src/components/sections/Hero.jsx)
-to the dimensions it prints. A higher-resolution source is worth supplying: the
-original is only 400×400, which is small for a hero portrait.
+To swap the photo, supply a new transparent cutout and update `src`, `width`,
+`height` and the `aspect-[…]` wrapper in
+[`Hero.jsx`](src/components/sections/Hero.jsx) to the new file's real pixel
+dimensions. All three must agree with the file: when they drifted apart,
+`object-contain` silently letterboxed the portrait inside its own box.
 
 ## SEO and sharing
 
@@ -183,10 +210,10 @@ Generated from the same content source as the page, so they cannot drift:
 | 1200x630 social card | `src/app/opengraph-image.jpg` |
 | Monogram icons | `src/app/icon.svg`, `src/app/apple-icon.png` |
 
-The `Person` block carries a `sameAs` array — **add your LinkedIn URL there** when
-you have one. That array is how a search engine reconciles this page with your
-other profiles under the same name, which is the single highest-leverage change
-left for showing up when someone searches your name.
+The `Person` block carries a `sameAs` array, already populated with the GitHub and
+LinkedIn URLs from `IDENTITY`. That array is how a search engine reconciles this
+page with your other profiles under the same name — add any further profile there
+rather than inline.
 
 ## Design system
 
