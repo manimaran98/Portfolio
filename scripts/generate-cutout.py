@@ -38,16 +38,54 @@ while q:
             visited[ny, nx] = True; q.append((ny, nx))
 
 alpha = Image.fromarray(np.where(visited, 0, 255).astype(np.uint8), mode='L')
-alpha = alpha.filter(ImageFilter.MinFilter(3))        # erode ~1px: kills the halo
-alpha = alpha.filter(ImageFilter.GaussianBlur(0.7))   # re-soften the matte edge
+alpha = alpha.filter(ImageFilter.MinFilter(5))        # erode ~2px, pulling the
+                                                      # matte inside the subject
+alpha = alpha.filter(ImageFilter.GaussianBlur(0.8))   # re-soften the matte edge
 
-af = np.asarray(alpha).astype(np.float32) / 255.0
 rgb = np.asarray(img).astype(np.float32)
-edge = (af > 0.03) & (af < 0.97)
-rgb[edge] *= 0.8                                      # darken any surviving rim
+alpha_arr = np.asarray(alpha)
+
+
+def decontaminate(rgb, known, iters=14):
+    """Push the subject's own colour outward into the soft edge.
+
+    PNG stores straight alpha, so the browser paints rgb*a + bg*(1-a). Any
+    partially transparent pixel that kept the white backdrop's colour lands as
+    a bright rim on a dark page — which is exactly the halo this removes.
+    Darkening those pixels is not enough: white at 80% is still light. They
+    have to be *replaced* with the nearest real subject colour.
+    """
+    rgb, known = rgb.copy(), known.copy()
+    h, w = known.shape
+    shifts = ((1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1))
+    for _ in range(iters):
+        if known.all():
+            break
+        acc = np.zeros_like(rgb)
+        cnt = np.zeros((h, w), np.float32)
+        for dy, dx in shifts:
+            # Explicit slicing rather than np.roll: wrapping would drag pixels
+            # from the opposite edge, and the subject touches the bottom.
+            ys_dst = slice(max(dy, 0), h + min(dy, 0))
+            ys_src = slice(max(-dy, 0), h + min(-dy, 0))
+            xs_dst = slice(max(dx, 0), w + min(dx, 0))
+            xs_src = slice(max(-dx, 0), w + min(-dx, 0))
+            k = known[ys_src, xs_src]
+            acc[ys_dst, xs_dst] += rgb[ys_src, xs_src] * k[..., None]
+            cnt[ys_dst, xs_dst] += k
+        newly = (~known) & (cnt > 0)
+        if not newly.any():
+            break
+        rgb[newly] = acc[newly] / cnt[newly][..., None]
+        known |= newly
+    return rgb
+
+
+# Only fully opaque pixels are trusted as uncontaminated subject colour.
+rgb = decontaminate(rgb, alpha_arr >= 250)
 
 out = Image.fromarray(
-    np.dstack([np.clip(rgb, 0, 255).astype(np.uint8), np.asarray(alpha)]), 'RGBA'
+    np.dstack([np.clip(rgb, 0, 255).astype(np.uint8), alpha_arr]), 'RGBA'
 )
 
 ys, xs = np.where(np.asarray(alpha) > 12)

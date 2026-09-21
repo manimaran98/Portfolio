@@ -283,7 +283,7 @@ export default function Hero() {
               />
 
               <motion.div
-                className="relative aspect-[238/365] w-full"
+                className="relative aspect-[235/364] w-full"
                 style={{
                   x: portraitX,
                   y: portraitY,
@@ -301,8 +301,8 @@ export default function Hero() {
                   <Image
                     src="/Profile-cutout.png"
                     alt={HERO.portraitAlt}
-                    width={476}
-                    height={730}
+                    width={470}
+                    height={728}
                     priority
                     sizes="(min-width: 1024px) 22rem, 70vw"
                     className={`h-full w-full object-contain object-bottom ${portraitFilter}`}
