@@ -25,6 +25,12 @@ const RING_MASK =
 const RING_GRADIENT =
   'conic-gradient(from 0deg, transparent 0deg, var(--ring-cool) 52deg, transparent 128deg, transparent 216deg, var(--ring-warm) 290deg, transparent 360deg)'
 
+/* Three stacked passes: a tight one to kill the hard alpha edge, then two
+   wider, fainter ones so the figure sits in the page instead of on it. On a
+   wrapper rather than the <img> so it does not clobber the grayscale filter. */
+const PORTRAIT_HALO =
+  'drop-shadow(0 0 1.5px var(--portrait-halo-tight)) drop-shadow(0 0 7px var(--portrait-halo-mid)) drop-shadow(0 0 22px var(--portrait-halo-wide))'
+
 const PORTRAIT_GLOW =
   'radial-gradient(48% 44% at 52% 40%, var(--portrait-glow-core), var(--portrait-glow-halo) 46%, transparent 72%)'
 
@@ -288,15 +294,20 @@ export default function Hero() {
                   WebkitMaskImage: PORTRAIT_MASK,
                 }}
               >
-                <Image
-                  src="/Profile-cutout.png"
-                  alt={HERO.portraitAlt}
-                  width={476}
-                  height={730}
-                  priority
-                  sizes="(min-width: 1024px) 22rem, 70vw"
-                  className={`h-full w-full object-contain object-bottom ${portraitFilter}`}
-                />
+                <div
+                  className="h-full w-full"
+                  style={{ filter: PORTRAIT_HALO }}
+                >
+                  <Image
+                    src="/Profile-cutout.png"
+                    alt={HERO.portraitAlt}
+                    width={476}
+                    height={730}
+                    priority
+                    sizes="(min-width: 1024px) 22rem, 70vw"
+                    className={`h-full w-full object-contain object-bottom ${portraitFilter}`}
+                  />
+                </div>
               </motion.div>
             </div>
           </motion.div>

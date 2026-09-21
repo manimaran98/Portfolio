@@ -37,6 +37,7 @@ Backend, database, migrations and auth: **none**. This is a static front-end.
 - **Reading measure:** use the `.measure` class (33em), not `ch`. Inter's "0" is much wider than its average character, so `68ch` renders at ~87 characters per line.
 - Section headlines animate with `RevealHeading` (a masked slide: the heading is translated out of an `overflow-hidden` wrapper and rises back in); body copy uses `Reveal` / `RevealGroup`. Keeping those distinct is what stops the page being one identical fade repeated six times.
 - `RevealHeading` observes the **wrapper**, not the heading. A translated element sits outside its own overflow clip, and IntersectionObserver measures the clipped rect — so `whileInView` on the heading itself reports zero visible area and never fires. Anything that animates out of a mask has to be triggered from an unclipped ancestor.
+- The portrait's cut edge is feathered by a `drop-shadow` halo in the **page colour** (`--portrait-halo-tight/mid/wide`), applied to a wrapper `div` — not to the `<img>`, whose `filter` already carries grayscale/contrast and would be overwritten. `drop-shadow` follows the alpha channel; `box-shadow` would only trace the rectangle. The halo renders *behind* the image, so it can soften a hard edge but can never hide a bright rim baked into the pixels — that has to be fixed in `scripts/generate-cutout.py`.
 - The hero renders `Profile-cutout.png`, a background-removed derivative of `Profile.jpg` produced by `scripts/generate-cutout.py` (re-runnable; never edit the PNG by hand). Replacing the photo means supplying a new transparent cutout and updating the `src`, `width`, `height` and `aspect-[238/365]` in `Hero.jsx` — dropping in a JPEG with a background will render as a white box on the dark canvas.
 - No CSS modules and no per-component `.css` files — utility classes plus the few component classes defined in `src/app/globals.css`.
 
@@ -68,6 +69,7 @@ Backend, database, migrations and auth: **none**. This is a static front-end.
 | V1 | Full single-page site: nav, hero, 01 Profile, 02 Expertise, 03 Experience, 04 Selected work, 05 Credentials, footer |
 | V2 | Light/dark theming via CSS `light-dark()`, `data-theme` on `<html>`, no-flash inline script, nav toggle |
 | V3 | UX pass: 44px tap targets, `.measure` reading width, panel elevation, masked headline reveal, no-JS fallback |
+| V5 | Theme-matched portrait halo: the cutout edge dissolves into the canvas, dark on dark and light on light |
 | V4 | SEO + sharing: robots, sitemap, ProfilePage/Person/WebSite JSON-LD, 1200×630 social card, monogram icons, designed 404, named section landmarks |
 
 ---
